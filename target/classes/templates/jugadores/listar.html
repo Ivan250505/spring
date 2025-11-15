@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Barça Gestión | Plantilla de Jugadores</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <h1>Plantilla de Jugadores 💙❤️</h1>
+        <p>Gestión completa de futbolistas, dorsales y fichas técnicas</p>
+    </header>
+
+    <div class="container fade-in">
+        <div class="nav-breadcrumb">
+            <a th:href="@{/}" class="btn btn-danger"> Salir</a>
+            <a th:href="@{/jugadores/nuevo}" class="btn btn-success">✍️ Fichar Nuevo Jugador</a>
+        </div>
+
+        <div class="content-card">
+            <h2>🏆 Futbolistas Registrados</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th># ID</th>
+                            <th>👤 Nombre</th>
+                            <th>👤 Apellido</th>
+                            <th>🛡️ Posición</th>
+                            <th>👕 Dorsal</th>
+                            <th>🌎 Nacionalidad</th>
+                            <th>🎂 Edad</th>
+                            <th>🛠️ Gestión</th> </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="jugador : ${jugadores}">
+                            <td th:text="${jugador.id}"></td>
+                            <td><strong th:text="${jugador.nombre}"></strong></td>
+                            <td><strong th:text="${jugador.apellido}"></strong></td>
+                            <td><span class="badge" th:text="${jugador.posicion}"></span></td>
+                            <td><strong th:text="${jugador.numeroCamiseta}"></strong></td>
+                            <td th:text="${jugador.nacionalidad}"></td>
+                            <td th:text="${jugador.edad}"></td>
+                            <td>
+                                <a th:href="@{/jugadores/editar/{id}(id=${jugador.id})}" class="btn btn-primary">📝 Editar Ficha</a>
+                                <a th:href="@{/jugadores/eliminar/{id}(id=${jugador.id})}" class="btn btn-danger"
+                                   onclick="return confirm('¿Está seguro de eliminar a este jugador de la plantilla?')">❌ Baja</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(jugadores)}">
+                            <td colspan="8" class="empty-state">No hay jugadores activos. ¡Es hora de hacer nuevos fichajes!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

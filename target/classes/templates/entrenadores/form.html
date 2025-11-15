@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Barça Gestión | Ficha Técnica de Entrenador</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <h1> táctica Ficha de Director Técnico</h1>
+        <p>Registra o actualiza la información del estratega del equipo</p>
+    </header>
+
+    <div class="container fade-in">
+        <div class="form-container">
+            <h2 th:text="${entrenador.id != null ? '📝 Actualizar Ficha Técnica' : '✍️ Nuevo Director Técnico'}"></h2>
+
+            <form th:action="@{/entrenadores/guardar}" th:object="${entrenador}" method="post">
+                <input type="hidden" th:field="*{id}">
+
+                <div class="form-group">
+                    <label>👤 Nombre:</label>
+                    <input type="text" th:field="*{nombre}" required placeholder="Ej: Xavi">
+                </div>
+
+                <div class="form-group">
+                    <label>👤 Apellido:</label>
+                    <input type="text" th:field="*{apellido}" required placeholder="Ej: Hernández">
+                </div>
+
+                <div class="form-group">
+                    <label>🌍 Nacionalidad:</label>
+                    <input type="text" th:field="*{nacionalidad}" placeholder="Ej: España (La Masia)">
+                </div>
+
+                <div class="form-group">
+                    <label>⭐ Trayectoria (Años de Experiencia):</label>
+                    <input type="number" th:field="*{experienciaAnios}" placeholder="Ej: 5 años como DT profesional">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">✅ Confirmar Contrato</button>
+                    <a th:href="@{/entrenadores}" class="btn btn-secondary">↩️ Volver al Listado</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

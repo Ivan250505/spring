@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Barça Gestión | Ficha de Federación Deportiva</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <h1>🏛️ Formulario de Federación (Asociación)</h1>
+        <p>Registra o edita los datos de la entidad deportiva regulatoria.</p>
+    </header>
+
+    <div class="container fade-in">
+        <div class="form-container">
+            <h2 th:text="${asociacion.id != null ? '📝 Actualizar Datos de la Federación' : '➕ Nueva Federación / Asociación'}"></h2>
+
+            <form th:action="@{/asociaciones/guardar}" th:object="${asociacion}" method="post">
+                <input type="hidden" th:field="*{id}">
+
+                <div class="form-group">
+                    <label>🏛️ Nombre Oficial:</label>
+                    <input type="text" th:field="*{nombre}" required placeholder="Ej: FIFA, UEFA, RFEF">
+                </div>
+
+                <div class="form-group">
+                    <label>🌍 Región / País Regulado:</label>
+                    <input type="text" th:field="*{pais}" required placeholder="Ej: Mundial, Europa, España">
+                </div>
+
+                <div class="form-group">
+                    <label>📅 Fecha de Establecimiento (Fundación):</label>
+                    <input type="date" th:field="*{fechaFundacion}">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">✅ Confirmar Registro</button>
+                    <a th:href="@{/asociaciones}" class="btn btn-secondary">↩️ Volver al menu</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

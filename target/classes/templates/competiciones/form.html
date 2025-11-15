@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Barça Gestión | Configuración de Torneos</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <h1>🏆 Formulario de Competición</h1>
+        <p>Registra, configura o actualiza torneos, ligas y copas oficiales</p>
+    </header>
+
+    <div class="container fade-in">
+        <div class="form-container">
+            <h2 th:text="${competicion.id != null ? '📝 Configuración de Competición' : '✨ Crear Nuevo Torneo'}"></h2>
+
+            <form th:action="@{/competiciones/guardar}" th:object="${competicion}" method="post">
+                <input type="hidden" th:field="*{id}">
+
+                <div class="form-group">
+                    <label>🥇 Nombre Oficial del Torneo:</label>
+                    <input type="text" th:field="*{nombre}" required placeholder="Ej: LaLiga EA Sports">
+                </div>
+
+                <div class="form-group">
+                    <label>🗂️ Categoría (Tipo de Competición):</label>
+                    <input type="text" th:field="*{tipo}" required placeholder="Ej: Liga de Primera División, Copa Nacional, Torneo Continental">
+                </div>
+
+                <div class="form-group">
+                    <label>🌎 Región/País de Organización:</label>
+                    <input type="text" th:field="*{pais}" placeholder="Ej: España, Europa, América del Sur">
+                </div>
+
+                <div class="form-group">
+                    <label>🗓️ Temporada/Año de Inicio:</label>
+                    <input type="number" th:field="*{anio}" placeholder="Ej: 2024">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">✅ Iniciar Competición</button>
+                    <a th:href="@{/competiciones}" class="btn btn-secondary">↩️ Volver al Calendario</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

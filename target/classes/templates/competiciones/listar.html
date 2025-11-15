@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Barça Gestión | Calendario de Competiciones</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <h1>🏆 Calendario Oficial de Competiciones</h1>
+        <p>Visión general de ligas, copas y torneos registrados</p>
+    </header>
+
+    <div class="container fade-in">
+        <div class="nav-breadcrumb">
+            <a th:href="@{/}" class="btn btn-danger"> Salir</a>
+            <a th:href="@{/competiciones/nueva}" class="btn btn-success">➕ Crear Nuevo Torneo</a>
+        </div>
+
+        <div class="content-card">
+            <h2>🥇 Torneos Activos por Temporada</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th># ID</th>
+                            <th>🏆 Nombre del Evento</th>
+                            <th>🗂️ Categoría</th>
+                            <th>🌎 Región</th>
+                            <th>🗓️ Temporada</th>
+                            <th>🛠️ Gestión</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="competicion : ${competiciones}">
+                            <td th:text="${competicion.id}"></td>
+                            <td><strong th:text="${competicion.nombre}"></strong></td>
+                            <td><span class="badge" th:text="${competicion.tipo}"></span></td>
+                            <td th:text="${competicion.pais}"></td>
+                            <td th:text="${competicion.anio}"></td>
+                            <td>
+                                <a th:href="@{/competiciones/editar/{id}(id=${competicion.id})}" class="btn btn-primary">⚙️ Configurar</a>
+                                <a th:href="@{/competiciones/eliminar/{id}(id=${competicion.id})}" class="btn btn-danger"
+                                   onclick="return confirm('¡Atención! ¿Está seguro de archivar o eliminar permanentemente esta competición?')">🗑️ Archivar</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(competiciones)}">
+                            <td colspan="6" class="empty-state">No hay competiciones programadas. ¡Comienza una nueva temporada!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

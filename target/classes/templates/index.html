@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barça Gestión | Dashboard Central</title>
+    <style>
+        :root {
+            --barca-azul: #004D98;
+            --barca-azul-oscuro: #003366;
+            --barca-grana: #A50044;
+            --barca-dorado: #EDBB00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Menú lateral animado */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--barca-azul-oscuro) 0%, var(--barca-azul) 100%);
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+            padding: 30px 0;
+            transform: translateX(0);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-280px);
+        }
+
+        .sidebar-header {
+            padding: 0 25px 30px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+        }
+
+        .menu-items {
+            margin-top: 30px;
+            list-style: none;
+        }
+
+        .menu-item {
+            opacity: 0;
+            animation: slideInLeft 0.5s ease forwards;
+        }
+
+        .menu-item:nth-child(1) { animation-delay: 0.1s; }
+        .menu-item:nth-child(2) { animation-delay: 0.2s; }
+        .menu-item:nth-child(3) { animation-delay: 0.3s; }
+        .menu-item:nth-child(4) { animation-delay: 0.4s; }
+        .menu-item:nth-child(5) { animation-delay: 0.5s; }
+
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            padding: 18px 25px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--barca-dorado);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            padding-left: 35px;
+        }
+
+        .menu-item a:hover::before {
+            transform: scaleY(1);
+        }
+
+        .menu-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .menu-text {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* Toggle button */
+        .menu-toggle {
+            position: fixed;
+            top: 25px;
+            left: 300px;
+            width: 50px;
+            height: 50px;
+            background: var(--barca-grana);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .menu-toggle.collapsed {
+            left: 20px;
+        }
+
+        .menu-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(165, 0, 68, 0.5);
+        }
+
+        /* Contenido principal */
+        .main-content {
+            margin-left: 280px;
+            padding: 40px;
+            transition: margin-left 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            min-height: 100vh;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        .hero-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            color: var(--barca-azul-oscuro);
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Cards grid */
+        .cards-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        .stat-card {
+            flex: 1 1 calc(33.333% - 20px);
+            min-width: 280px;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+        .stat-card:nth-child(5) { animation-delay: 0.5s; }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--barca-azul), var(--barca-grana));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .stat-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--barca-azul-oscuro);
+            margin-bottom: 10px;
+        }
+
+        .stat-description {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* Animaciones */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-280px);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                left: 20px;
+            }
+
+            .stat-card {
+                flex: 1 1 100%;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menú lateral -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">⚽ BARÇA</div>
+            <div class="sidebar-subtitle">Sistema de Gestión</div>
+        </div>
+        <ul class="menu-items">
+            <li class="menu-item">
+                <a th:href="@{/asociaciones}">
+                    <span class="menu-icon">🏛️</span>
+                    <span class="menu-text">Federaciones</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a th:href="@{/entrenadores}">
+                    <span class="menu-icon">👔</span>
+                    <span class="menu-text">Cuerpo Técnico</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a th:href="@{/clubes}">
+                    <span class="menu-icon">🛡️</span>
+                    <span class="menu-text">Clubes</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a th:href="@{/jugadores}">
+                    <span class="menu-icon">👟</span>
+                    <span class="menu-text">Jugadores</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a th:href="@{/competiciones}">
+                    <span class="menu-icon">🏆</span>
+                    <span class="menu-text">Torneos</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Botón toggle -->
+    <button class="menu-toggle" id="menuToggle" onclick="toggleMenu()">☰</button>
+
+    <!-- Contenido principal -->
+    <main class="main-content" id="mainContent">
+        <section class="hero-section">
+            <h1 class="hero-title">Panel de Control Central</h1>
+            <p class="hero-description">
+                Bienvenido al sistema integrado de gestión deportiva. 
+                Accede a todos los módulos de administración desde un solo lugar.
+            </p>
+        </section>
+
+        <div class="cards-wrapper">
+            <article class="stat-card">
+                <div class="stat-icon">🏛️</div>
+                <h3 class="stat-title">Federaciones</h3>
+                <p class="stat-description">Gestiona entidades regulatorias y federaciones deportivas oficiales.</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon">👔</div>
+                <h3 class="stat-title">Cuerpo Técnico</h3>
+                <p class="stat-description">Administra directores técnicos, asistentes y personal especializado.</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon">🛡️</div>
+                <h3 class="stat-title">Clubes y Equipos</h3>
+                <p class="stat-description">Control completo de equipos, sedes y afiliaciones institucionales.</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon">👟</div>
+                <h3 class="stat-title">Plantilla</h3>
+                <p class="stat-description">Perfiles detallados de jugadores con estadísticas y seguimiento.</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <h3 class="stat-title">Competiciones</h3>
+                <p class="stat-description">Calendario completo de torneos, ligas y copas nacionales.</p>
+            </article>
+        </div>
+    </main>
+
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const menuToggle = document.getElementById('menuToggle');
+            
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+            menuToggle.classList.toggle('collapsed');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Barça Gestión | Ficha Detallada del Club</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .detail-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .info-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--barca-claro); /* Usando color claro */
+        }
+        .info-label {
+            font-weight: 600;
+            color: var(--barca-azul-oscuro);
+            opacity: 0.85;
+        }
+        .info-value {
+            color: #333;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🛡️ Ficha Detallada del Club</h1>
+        <p>Visión completa de la estructura del equipo, plantilla y calendario.</p>
+    </header>
+
+    <div class="container fade-in">
+        <div class="nav-breadcrumb">
+            <a th:href="@{/}" class="btn btn-danger"> Salir</a>
+            <a th:href="@{/clubes}" class="btn btn-secondary">⚽ Listado de Clubes</a>
+            <a th:href="@{/clubes/editar/{id}(id=${club.id})}" class="btn btn-primary">✏️ Editar Ficha del Club</a>
+        </div>
+
+        <div th:if="${club != null}">
+            
+            <div class="content-card mb-4">
+                <h2>📋 Datos Fundamentales: <span th:text="${club.nombre}"></span></h2>
+                
+                <div class="detail-group">
+                    <div class="info-group">
+                        <span class="info-label">🏟️ Sede (Estadio):</span>
+                        <span class="info-value" th:text="${club.estadio}"></span>
+                    </div>
+                    <div class="info-group">
+                        <span class="info-label">🏙️ Ubicación:</span>
+                        <span class="info-value" th:text="${club.ciudad}"></span>
+                    </div>
+                    <div class="info-group">
+                        <span class="info-label">📅 Año de Fundación:</span>
+                        <span class="info-value" th:text="${club.fechaFundacion}"></span>
+                    </div>
+                    <div class="info-group">
+                        <span class="info-label">🏆 Asociación Afiliada:</span>
+                        <span class="info-value" th:text="${club.asociacion != null ? club.asociacion.nombre : 'N/A'}"></span>
+                    </div>
+                    <div class="info-group">
+                        <span class="info-label">👔 Director Técnico Actual:</span>
+                        <span class="info-value">
+                            <strong th:text="${club.entrenador != null ? club.entrenador.nombre + ' ' + club.entrenador.apellido : 'Sin estratega asignado'}"></strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card mt-4">
+                <h2>👥 Plantilla Registrada</h2>
+
+                <div class="table-container" th:if="${club.jugadores != null && !club.jugadores.isEmpty()}">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>👤 Nombre Completo</th>
+                                <th>🛡️ Posición</th>
+                                <th>👕 Dorsal</th>
+                                <th>🌍 Nacionalidad</th>
+                                <th>🎂 Edad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="jugador : ${club.jugadores}">
+                                <td><strong th:text="${jugador.nombre + ' ' + jugador.apellido}"></strong></td>
+                                <td><span class="badge" th:text="${jugador.posicion}"></span></td>
+                                <td><strong th:text="${jugador.numeroCamiseta}"></strong></td>
+                                <td th:text="${jugador.nacionalidad}"></td>
+                                <td th:text="${jugador.edad}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="empty-state" th:if="${club.jugadores == null || club.jugadores.isEmpty()}">
+                    ¡La plantilla está vacía! Es momento de hacer fichajes para este club.
+                </p>
+            </div>
+
+            <div class="content-card mt-4">
+                <h2>🏅 Competiciones Actuales</h2>
+
+                <div class="table-container" th:if="${club.competiciones != null && !club.competiciones.isEmpty()}">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>🏆 Competición</th>
+                                <th>🗂️ Tipo</th>
+                                <th>🌎 Región</th>
+                                <th>🗓️ Año</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="competicion : ${club.competiciones}">
+                                <td><strong th:text="${competicion.nombre}"></strong></td>
+                                <td><span class="badge" th:text="${competicion.tipo}"></span></td>
+                                <td th:text="${competicion.pais}"></td>
+                                <td th:text="${competicion.anio}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="empty-state" th:if="${club.competiciones == null || club.competiciones.isEmpty()}">
+                    Este club no está inscrito en competiciones activas.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

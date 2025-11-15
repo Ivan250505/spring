@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Barça Gestión | Configuración del Club</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <h1>🛡️ Registro de Clubes</h1>
+        <p>Completa la ficha técnica para registrar o actualizar la información del equipo</p>
+    </header>
+
+    <div class="container fade-in">
+        <div class="form-container">
+            <h2 th:text="${club.id != null ? '📝 Actualizar Datos del Club' : '➕ Ficha de Nuevo Club'}"></h2>
+
+            <form th:action="@{/clubes/guardar}" th:object="${club}" method="post">
+                <input type="hidden" th:field="*{id}">
+
+                <div class="form-group">
+                    <label>🛡️ Nombre Oficial del Club:</label>
+                    <input type="text" th:field="*{nombre}" required placeholder="Ej: FC Barcelona">
+                </div>
+
+                <div class="form-group">
+                    <label>🏙️ Ciudad de Sede:</label>
+                    <input type="text" th:field="*{ciudad}" required placeholder="Ej: Barcelona">
+                </div>
+
+                <div class="form-group">
+                    <label>📅 Fecha de Fundación:</label>
+                    <input type="date" th:field="*{fechaFundacion}">
+                </div>
+
+                <div class="form-group">
+                    <label>🏟️ Estadio Local:</label>
+                    <input type="text" th:field="*{estadio}" placeholder="Ej: Spotify Camp Nou">
+                </div>
+
+                <div class="form-group">
+                    <label>🏛️ Asociación / Federación (Requerido):</label>
+                    <select name="asociacionId" required>
+                        <option value="">Seleccione una asociación</option>
+                        <option th:each="asociacion : ${asociaciones}"
+                                th:value="${asociacion.id}"
+                                th:text="${asociacion.nombre}"
+                                th:selected="${club.asociacion != null && club.asociacion.id == asociacion.id}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>👔 Director Técnico (Asignación):</label>
+                    <select name="entrenadorId">
+                        <option value="">Sin entrenador</option>
+                        <option th:each="entrenador : ${entrenadores}"
+                                th:value="${entrenador.id}"
+                                th:text="${entrenador.nombre + ' ' + entrenador.apellido}"
+                                th:selected="${club.entrenador != null && club.entrenador.id == entrenador.id}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>🏆 Competiciones (Inscripción):</label>
+                    <select name="competicionIds" multiple size="5" style="height: auto;">
+                        <option th:each="competicion : ${competiciones}"
+                                th:value="${competicion.id}"
+                                th:text="${competicion.nombre + ' - ' + competicion.tipo + ' (' + competicion.anio + ')'}"
+                                th:selected="${club.competiciones != null && #lists.contains(club.competiciones, competicion)}">
+                        </option>
+                    </select>
+                    <small class="text-hint">
+                        Mantén presionado **Ctrl** (Windows) o **Cmd** (Mac) para seleccionar múltiples competiciones.
+                    </small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">✅ Confirmar Registro</button>
+                    <a th:href="@{/clubes}" class="btn btn-secondary">↩️ Volver al Catálogo</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

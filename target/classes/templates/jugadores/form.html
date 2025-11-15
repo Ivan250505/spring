@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Barça Gestión | Ficha de Jugador</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <h1>⚽ Ficha de Jugador (Registro)</h1>
+        <p>Completa la información para gestionar la plantilla del club</p>
+    </header>
+
+    <div class="container fade-in">
+        <div class="form-container">
+            <h2 th:text="${jugador.id != null ? '📝 Actualizar Datos del Jugador' : '✍️ Nuevo Fichaje'}"></h2>
+
+            <form th:action="@{/jugadores/guardar}" th:object="${jugador}" method="post">
+                <input type="hidden" th:field="*{id}">
+
+                <div class="form-group">
+                    <label>ID Nombre:</label>
+                    <input type="text" th:field="*{nombre}" required placeholder="Ej: Pedri González">
+                </div>
+
+                <div class="form-group">
+                    <label>ID Apellido:</label>
+                    <input type="text" th:field="*{apellido}" required placeholder="Ej: López">
+                </div>
+
+                <div class="form-group">
+                    <label>🛡️ Posición Táctica:</label>
+                    <input type="text" th:field="*{posicion}" required placeholder="Ej: Interior, Lateral Izquierdo">
+                </div>
+
+                <div class="form-group">
+                    <label>👕 Dorsal (Camiseta):</label>
+                    <input type="number" th:field="*{numeroCamiseta}" placeholder="Ej: 8 (El número del Maestro)">
+                </div>
+
+                <div class="form-group">
+                    <label>🌎 Origen (Nacionalidad):</label>
+                    <input type="text" th:field="*{nacionalidad}" placeholder="Ej: España">
+                </div>
+
+                <div class="form-group">
+                    <label>🎂 Edad:</label>
+                    <input type="number" th:field="*{edad}" placeholder="Ej: 20">
+                </div>
+
+                <div class="form-group">
+                    <label>🛡️ Asignación de Club:</label>
+                    <select name="clubId">
+                        <option value="">Sin club</option>
+                        <option th:each="club : ${clubes}"
+                                th:value="${club.id}"
+                                th:text="${club.nombre}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">✅ Confirmar Fichaje</button>
+                    <a th:href="@{/jugadores}" class="btn btn-secondary">↩️ Volver al Listado</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
