@@ -1,0 +1,70 @@
+🧐 ¿De qué Trata la Presentación?
+La presentación explica cómo modelar las relaciones de una base de datos relacional (tablas) usando clases de entidad en Java con JPA/Spring. Se enfoca en cómo utilizar las anotaciones de JPA para mapear estas relaciones en un modelo de dominio de fútbol (Club, Entrenador, Jugador, Asociación, Competición).
+
+
+
+
+
+Tipos de Relaciones JPA Cubiertas:
+La presentación detalla el uso de las siguientes anotaciones y cómo afectan al modelo de datos:
+
+@OneToOne (Uno a Uno): Un Club tiene un solo Entrenador, y un Entrenador pertenece a un solo Club. Se usa la llave foránea (FK) en la entidad propietaria (Club) para referenciar al Entrenador.
+
+
+@OneToMany (Uno a Muchos): Un Club tiene una lista de Jugadores. Para evitar la creación de una tabla intermedia y lograr que la tabla jugadores tenga la FK al Club, se debe usar la anotación @JoinColumn(name = "id_club") en la colección de Jugadores dentro de la clase Club.
+
+
+
+
+
+@ManyToOne (Muchos a Uno): Un Club pertenece a una Asociacion, y una Asociacion puede tener muchos Clubes. Se crea un campo FK (asociacion_id) en la tabla clubes por defecto, pero también se puede personalizar con @JoinColumn.
+
+
+
+
+
+@ManyToMany (Muchos a Muchos): Un Club participa en muchas Competiciones, y una Competicion tiene muchos Clubes. JPA crea una tabla intermedia (CLUBES_COMPETICIONES) para gestionar esta relación.
+
+
+Conceptos Adicionales de JPA:
+
+Estrategias de Obtención (Fetching): Explica la diferencia entre EAGER (carga inmediata) y LAZY (carga perezosa) para recuperar los datos relacionados.
+
+
+La configuración por defecto es LAZY para @OneToMany y @ManyToMany.
+
+La configuración por defecto es EAGER para @OneToOne y @ManyToOne.
+
+Se recomienda usar siempre LAZY para mejorar el rendimiento.
+
+
+Restricción Foreign Key (Clave Foránea): Menciona que por defecto no permite eliminar un registro referenciado. Se puede usar la anotación @OnDelete(action = OnDeleteAction.CASCADE) (si usa Hibernate como proveedor JPA) para que la base de datos elimine automáticamente los registros "hijos" al eliminar el "padre".
+
+
+
+
+💻 Lo que Toca Hacer en el Proyecto y Cómo
+El proyecto que deben realizar es una aplicación web de gestión que implemente el modelo de dominio de fútbol (Clubes, Entrenadores, Jugadores, Asociaciones, Competiciones) utilizando las tecnologías mencionadas: Spring Boot, JPA, y Thymeleaf (asumo que "thaylinf" se refiere a Thymeleaf para la interfaz de usuario).
+
+1. Lo que Toca Hacer (El Objetivo Final):
+El objetivo es construir una aplicación web con una base de datos que:
+
+Modele correctamente las entidades (Club, Entrenador, Jugador, Asociacion, Competicion) y sus relaciones de JPA (@OneToOne, @OneToMany, @ManyToOne, @ManyToMany) tal como se explican en la presentación.
+
+Permita gestionar (CRUD) estas entidades a través de una interfaz web.
+
+2. Cómo Toca Hacerlo (Los Pasos Clave con Spring Boot):
+
+Capa del Proyecto,Tarea Principal,Tecnologías y Conceptos
+Persistencia (Modelo),Crear las Clases de Entidad y Mapear las Relaciones.,"JPA / Anotaciones: Usar @Entity, @Table, @Id para las clases, y luego todas las anotaciones de relación (@OneToOne, @OneToMany, @ManyToOne, @ManyToMany) como se detalla en la presentación. Asegúrese de aplicar @JoinColumn en @OneToMany para evitar la tabla intermedia."
+Base de Datos,Configurar la Conexión.,"Spring Boot: Configurar una base de datos (como H2, MySQL, PostgreSQL) en application.properties/yml. El ejemplo usa H2 en memoria (jdbc:h2:mem:testdb)."
+Lógica de Negocio,Crear Repositorios y Servicios.,"Spring Data JPA: Crear interfaces ...Repository que extiendan de JpaRepository<Entidad, ID> para obtener las funcionalidades CRUD básicas sin escribir SQL. Crear ...Service (opcional, pero buena práctica) para la lógica de negocio."
+Controlador,Manejar las Peticiones Web.,"Spring MVC / Spring Boot: Crear clases @Controller para manejar las peticiones HTTP (GET para mostrar formularios/listas, POST para guardar/actualizar) y devolver el nombre de las plantillas de Thymeleaf."
+Interfaz de Usuario,Crear la Interfaz Web.,"Thymeleaf: Crear las plantillas HTML (.html) en la carpeta src/main/resources/templates. Usar los atributos especiales de Thymeleaf (th:object, th:field, th:each, etc.) para mostrar las listas de entidades y crear formularios para dar de alta y editar los datos, incluyendo la selección de entidades relacionadas (por ejemplo, al crear un Club, poder seleccionar su Entrenador de una lista)."
+
+
+
+
+
+
+se neceita hacer en el puerto 8096 

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Barça Gestión | Listado de Clubes</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <h1>🛡️ Clubes Afiliados</h1>
+        <p>Catálogo de equipos, su ubicación y estructura.</p>
+    </header>
+
+    <div class="container fade-in">
+        <div class="nav-breadcrumb">
+            <a th:href="@{/}" class="btn btn-danger"> Salir</a>
+            <a th:href="@{/clubes/nuevo}" class="btn btn-success">➕ Registrar Nuevo Club</a>
+        </div>
+
+        <div class="content-card">
+            <h2>📋 Equipos Registrados</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th># ID</th>
+                            <th>🛡️ Nombre del Club</th>
+                            <th>🏙️ Ciudad</th>
+                            <th>🏟️ Estadio Principal</th>
+                            <th>🏆 Asociación</th>
+                            <th>🛠️ Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="club : ${clubes}">
+                            <td th:text="${club.id}"></td>
+                            <td><strong th:text="${club.nombre}"></strong></td>
+                            <td th:text="${club.ciudad}"></td>
+                            <td th:text="${club.estadio}"></td>
+                            <td>
+                                <span class="badge" th:text="${club.asociacion != null ? club.asociacion.nombre : 'Sin Afiliar'}"></span>
+                            </td>
+                            <td>
+                                <a th:href="@{/clubes/ver/{id}(id=${club.id})}" class="btn btn-secondary">👁️ Ver</a>
+                                <a th:href="@{/clubes/editar/{id}(id=${club.id})}" class="btn btn-primary">📝 Editar</a>
+                                <a th:href="@{/clubes/eliminar/{id}(id=${club.id})}" class="btn btn-danger"
+                                   onclick="return confirm('¿Está seguro de archivar este club y toda su información?')">❌ Archivar</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(clubes)}">
+                            <td colspan="6" class="empty-state">No hay clubes registrados en el sistema.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

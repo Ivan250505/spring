@@ -1,0 +1,174 @@
+=====================================
+INSTRUCCIONES PARA EJECUTAR EL PROYECTO
+Sistema de Gestión de Fútbol
+=====================================
+
+✅ COMPILACIÓN EXITOSA
+El proyecto compiló sin errores.
+
+📋 PASOS PARA EJECUTAR:
+
+1. CONFIGURAR XAMPP Y MYSQL
+   -------------------------
+   - Abrir XAMPP Control Panel
+   - Iniciar el servicio MySQL (hacer clic en "Start")
+   - Verificar que MySQL esté corriendo en el puerto 3306
+
+2. CREAR LA BASE DE DATOS
+   -----------------------
+   Opción A - Usando phpMyAdmin:
+   a) Abrir navegador: http://localhost/phpmyadmin
+   b) Hacer clic en "SQL" en el menú superior
+   c) Copiar TODO el contenido del archivo "databasemysql.txt"
+   d) Pegar en el área de texto y hacer clic en "Continuar"
+
+   Opción B - Usando MySQL CLI:
+   a) Abrir cmd o terminal
+   b) Ejecutar: mysql -u root -p
+   c) Dejar la contraseña en blanco (solo presionar Enter)
+   d) Copiar y pegar el contenido de "databasemysql.txt"
+
+3. EJECUTAR LA APLICACIÓN
+   -----------------------
+   Opción A - Desde la terminal (RECOMENDADO):
+   a) Abrir cmd o terminal en esta carpeta
+   b) Ejecutar: mvnw.cmd spring-boot:run
+   c) Esperar a que aparezca: "Started FutbolApplication"
+
+   Opción B - Ejecutar el JAR generado:
+   a) Ejecutar: java -jar target\futbol-1.jar
+
+4. ACCEDER A LA APLICACIÓN
+   ------------------------
+   - Abrir navegador web
+   - Ir a: http://localhost:8096
+   - Explorar el sistema desde el menú principal
+
+=====================================
+ESTRUCTURA DEL PROYECTO
+=====================================
+
+com.futbol.app/
+├── entity/              (5 entidades JPA con relaciones)
+│   ├── Asociacion.java  (@OneToMany con Club)
+│   ├── Entrenador.java  (@OneToOne con Club)
+│   ├── Club.java        (Entidad principal)
+│   ├── Jugador.java     (@OneToMany desde Club)
+│   └── Competicion.java (@ManyToMany con Club)
+│
+├── repository/          (5 repositorios JPA)
+│   ├── AsociacionRepository.java
+│   ├── EntrenadorRepository.java
+│   ├── ClubRepository.java
+│   ├── JugadorRepository.java
+│   └── CompeticionRepository.java
+│
+├── service/            (5 servicios de negocio)
+│   ├── AsociacionService.java
+│   ├── EntrenadorService.java
+│   ├── ClubService.java
+│   ├── JugadorService.java
+│   └── CompeticionService.java
+│
+└── controller/         (6 controladores web)
+    ├── HomeController.java
+    ├── AsociacionController.java
+    ├── EntrenadorController.java
+    ├── ClubController.java
+    ├── JugadorController.java
+    └── CompeticionController.java
+
+templates/              (Vistas Thymeleaf)
+├── index.html
+├── asociaciones/
+├── entrenadores/
+├── clubes/
+├── jugadores/
+└── competiciones/
+
+=====================================
+RELACIONES JPA IMPLEMENTADAS
+=====================================
+
+✅ @OneToOne
+   Club ↔ Entrenador
+   Un club tiene un entrenador, un entrenador pertenece a un club
+
+✅ @OneToMany
+   Club → Jugadores (con @JoinColumn para evitar tabla intermedia)
+   Un club tiene muchos jugadores
+
+✅ @ManyToOne
+   Club → Asociación
+   Muchos clubes pertenecen a una asociación
+
+✅ @ManyToMany
+   Club ↔ Competiciones (tabla intermedia: clubes_competiciones)
+   Un club participa en muchas competiciones
+
+=====================================
+FUNCIONALIDADES DISPONIBLES
+=====================================
+
+- CRUD completo para todas las entidades
+- Listado de todas las entidades
+- Formularios para crear y editar
+- Vista detallada de Clubes con jugadores y competiciones
+- Navegación entre entidades relacionadas
+
+=====================================
+CONFIGURACIÓN
+=====================================
+
+Puerto: 8096
+Base de datos: futbol_db
+Usuario MySQL: root
+Password MySQL: (vacío)
+JPA: Hibernate con MySQL Dialect
+Thymeleaf: Cache deshabilitado para desarrollo
+
+=====================================
+DATOS DE EJEMPLO
+=====================================
+
+El archivo databasemysql.txt incluye datos de ejemplo:
+- 3 Asociaciones (AFA, RFEF, CONMEBOL)
+- 3 Entrenadores (Simeone, Guardiola, Gallardo)
+- 3 Clubes (River Plate, Boca Juniors, Real Madrid)
+- 5 Jugadores
+- 3 Competiciones
+- Relaciones entre clubes y competiciones
+
+=====================================
+SOLUCIÓN DE PROBLEMAS
+=====================================
+
+Error: "Communications link failure"
+Solución: Verificar que MySQL esté corriendo en XAMPP
+
+Error: "Unknown database 'futbol_db'"
+Solución: Ejecutar el script SQL de databasemysql.txt
+
+Error: "Access denied for user 'root'"
+Solución: Verificar que el password esté vacío en application.properties
+
+Error: "Port 8096 already in use"
+Solución: Cambiar el puerto en application.properties
+
+=====================================
+COMPILAR NUEVAMENTE
+=====================================
+
+Si haces cambios en el código:
+mvnw.cmd clean compile
+
+Para generar el JAR:
+mvnw.cmd clean package -DskipTests
+
+=====================================
+¡LISTO PARA USAR!
+=====================================
+
+La aplicación está completamente funcional y lista para ejecutarse.
+Todas las relaciones JPA están correctamente implementadas.
+El código es simple, modular y sigue buenas prácticas de Spring Boot.

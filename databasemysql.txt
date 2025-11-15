@@ -1,0 +1,140 @@
+-- ============================================
+-- BASE DE DATOS SISTEMA DE GESTIÓN DE FÚTBOL
+-- ============================================
+
+-- Crear la base de datos
+DROP DATABASE IF EXISTS futbol_db;
+CREATE DATABASE futbol_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE futbol_db;
+
+-- ============================================
+-- TABLA: asociacion
+-- Descripción: Asociaciones de fútbol (ej: AFA, UEFA, CONMEBOL)
+-- ============================================
+CREATE TABLE asociacion (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    pais VARCHAR(100) NOT NULL,
+    fecha_fundacion DATE,
+    UNIQUE KEY uk_nombre_asociacion (nombre)
+) ENGINE=InnoDB;
+
+-- ============================================
+-- TABLA: entrenador
+-- Descripción: Entrenadores de clubes
+-- ============================================
+CREATE TABLE entrenador (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    nacionalidad VARCHAR(100),
+    experiencia_anios INT,
+    UNIQUE KEY uk_nombre_apellido (nombre, apellido)
+) ENGINE=InnoDB;
+
+-- ============================================
+-- TABLA: club
+-- Descripción: Clubes de fútbol
+-- Relaciones:
+--   - @OneToOne con entrenador
+--   - @ManyToOne con asociacion
+-- ============================================
+CREATE TABLE club (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    ciudad VARCHAR(100) NOT NULL,
+    fecha_fundacion DATE,
+    estadio VARCHAR(100),
+    entrenador_id BIGINT,
+    asociacion_id BIGINT NOT NULL,
+    UNIQUE KEY uk_nombre_club (nombre),
+    CONSTRAINT fk_club_entrenador FOREIGN KEY (entrenador_id) REFERENCES entrenador(id) ON DELETE SET NULL,
+    CONSTRAINT fk_club_asociacion FOREIGN KEY (asociacion_id) REFERENCES asociacion(id) ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
+-- ============================================
+-- TABLA: jugador
+-- Descripción: Jugadores de clubes
+-- Relaciones:
+--   - @ManyToOne con club (a través de id_club)
+-- ============================================
+CREATE TABLE jugador (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    posicion VARCHAR(50) NOT NULL,
+    numero_camiseta INT,
+    nacionalidad VARCHAR(100),
+    edad INT,
+    id_club BIGINT,
+    CONSTRAINT fk_jugador_club FOREIGN KEY (id_club) REFERENCES club(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ============================================
+-- TABLA: competicion
+-- Descripción: Competiciones de fútbol
+-- ============================================
+CREATE TABLE competicion (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    pais VARCHAR(100),
+    anio INT,
+    UNIQUE KEY uk_nombre_competicion (nombre, anio)
+) ENGINE=InnoDB;
+
+-- ============================================
+-- TABLA: clubes_competiciones (Tabla Intermedia)
+-- Descripción: Relación @ManyToMany entre Club y Competicion
+-- ============================================
+CREATE TABLE clubes_competiciones (
+    club_id BIGINT NOT NULL,
+    competicion_id BIGINT NOT NULL,
+    PRIMARY KEY (club_id, competicion_id),
+    CONSTRAINT fk_cc_club FOREIGN KEY (club_id) REFERENCES club(id) ON DELETE CASCADE,
+    CONSTRAINT fk_cc_competicion FOREIGN KEY (competicion_id) REFERENCES competicion(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ============================================
+-- DATOS DE EJEMPLO (OPCIONAL)
+-- ============================================
+
+-- Insertar Asociaciones
+INSERT INTO asociacion (nombre, pais, fecha_fundacion) VALUES
+('AFA', 'Argentina', '1893-02-21'),
+('RFEF', 'España', '1909-09-29'),
+('CONMEBOL', 'Sudamérica', '1916-07-09');
+
+-- Insertar Entrenadores
+INSERT INTO entrenador (nombre, apellido, nacionalidad, experiencia_anios) VALUES
+('Diego', 'Simeone', 'Argentina', 15),
+('Pep', 'Guardiola', 'España', 18),
+('Marcelo', 'Gallardo', 'Argentina', 10);
+
+-- Insertar Clubes
+INSERT INTO club (nombre, ciudad, fecha_fundacion, estadio, entrenador_id, asociacion_id) VALUES
+('River Plate', 'Buenos Aires', '1901-05-25', 'Monumental', 3, 1),
+('Boca Juniors', 'Buenos Aires', '1905-04-03', 'La Bombonera', NULL, 1),
+('Real Madrid', 'Madrid', '1902-03-06', 'Santiago Bernabéu', NULL, 2);
+
+-- Insertar Jugadores
+INSERT INTO jugador (nombre, apellido, posicion, numero_camiseta, nacionalidad, edad, id_club) VALUES
+('Franco', 'Armani', 'Portero', 1, 'Argentina', 37, 1),
+('Enzo', 'Pérez', 'Mediocampista', 24, 'Argentina', 38, 1),
+('Miguel', 'Borja', 'Delantero', 9, 'Colombia', 31, 1),
+('Sergio', 'Romero', 'Portero', 1, 'Argentina', 36, 2),
+('Edinson', 'Cavani', 'Delantero', 10, 'Uruguay', 37, 2);
+
+-- Insertar Competiciones
+INSERT INTO competicion (nombre, tipo, pais, anio) VALUES
+('Copa Libertadores', 'Internacional', 'Sudamérica', 2024),
+('Liga Profesional', 'Nacional', 'Argentina', 2024),
+('Copa del Rey', 'Nacional', 'España', 2024);
+
+-- Insertar relaciones Club-Competiciones
+INSERT INTO clubes_competiciones (club_id, competicion_id) VALUES
+(1, 1), -- River en Libertadores
+(1, 2), -- River en Liga Profesional
+(2, 1), -- Boca en Libertadores
+(2, 2), -- Boca en Liga Profesional
+(3, 3); -- Real Madrid en Copa del Rey

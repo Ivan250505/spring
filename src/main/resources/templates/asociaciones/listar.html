@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Barça Gestión | Directorio de Federaciones</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <h1>🏛️ Federaciones y Asociaciones</h1>
+        <p>Directorio de entidades deportivas reguladoras a nivel mundial.</p>
+    </header>
+
+    <div class="container fade-in">
+        <div class="nav-breadcrumb">
+            <a th:href="@{/}" class="btn btn-danger"> Salir</a>
+            <a th:href="@{/asociaciones/nueva}" class="btn btn-success">➕ Registrar Nueva Federación</a>
+        </div>
+
+        <div class="content-card">
+            <h2>📋 Entidades Regulatorias</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th># ID</th>
+                            <th>🏛️ Nombre Oficial</th>
+                            <th>🌍 Región / País</th>
+                            <th>📅 Establecimiento</th>
+                            <th>🛠️ Gestión</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="asociacion : ${asociaciones}">
+                            <td th:text="${asociacion.id}"></td>
+                            <td><strong th:text="${asociacion.nombre}"></strong></td>
+                            <td><span class="badge" th:text="${asociacion.pais}"></span></td>
+                            <td th:text="${asociacion.fechaFundacion}"></td>
+                            <td>
+                                <a th:href="@{/asociaciones/editar/{id}(id=${asociacion.id})}" class="btn btn-primary">📝 Editar Ficha</a>
+                                <a th:href="@{/asociaciones/eliminar/{id}(id=${asociacion.id})}" class="btn btn-danger"
+                                   onclick="return confirm('¿Está seguro de eliminar esta entidad regulatoria?')">❌ Dar de Baja</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(asociaciones)}">
+                            <td colspan="5" class="empty-state">No hay federaciones registradas en el directorio.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

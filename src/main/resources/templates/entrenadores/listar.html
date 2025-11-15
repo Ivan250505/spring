@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Barça Gestión | Cuerpo Técnico</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <h1>Cuerpo Técnico y Entrenadores 👔</h1>
+        <p>Administración y seguimiento de Directores Técnicos y asistentes</p>
+    </header>
+
+    <div class="container fade-in">
+        <div class="nav-breadcrumb">
+            <a th:href="@{/}" class="btn btn-danger"> Salir</a>
+            <a th:href="@{/entrenadores/nuevo}" class="btn btn-success">➕ Contratar Entrenador</a>
+        </div>
+
+        <div class="content-card">
+            <h2>🗒️ Fichas Técnicas del Cuerpo Técnico</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th># ID</th>
+                            <th>👤 Nombre</th>
+                            <th>👤 Apellido</th>
+                            <th>🌍 Nacionalidad</th>
+                            <th> tactica Experiencia</th> <th>🛠️ Gestión</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="entrenador : ${entrenadores}">
+                            <td th:text="${entrenador.id}"></td>
+                            <td><strong th:text="${entrenador.nombre}"></strong></td>
+                            <td><strong th:text="${entrenador.apellido}"></strong></td>
+                            <td th:text="${entrenador.nacionalidad}"></td>
+                            <td>
+                                <span class="badge" th:text="${entrenador.experienciaAnios}"></span> años
+                            </td>
+                            <td>
+                                <a th:href="@{/entrenadores/editar/{id}(id=${entrenador.id})}" class="btn btn-primary">📝 Actualizar</a>
+                                <a th:href="@{/entrenadores/eliminar/{id}(id=${entrenador.id})}" class="btn btn-danger"
+                                   onclick="return confirm('¿Está seguro de dar de baja a este Director Técnico?')">❌ Baja</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(entrenadores)}">
+                            <td colspan="6" class="empty-state">No hay Directores Técnicos registrados. ¡Necesitas un estratega!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
