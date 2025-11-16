@@ -1,4 +1,4 @@
-FROM openjdk:21
-COPY "./target/futbol-1.jar.original" "app.jar"
+FROM eclipse-temurin:21-jdk
+COPY "./target/futbol-1.jar" "app.jar"
 EXPOSE 8103
 ENTRYPOINT ["java", "-jar", "app.jar"]
